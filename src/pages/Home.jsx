@@ -1,9 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
+import CloudIcon from "@mui/icons-material/Cloud";
+import CloudQueueIcon from "@mui/icons-material/CloudQueue";
+import ThunderstormIcon from "@mui/icons-material/Thunderstorm";
+import WbSunnyIcon from "@mui/icons-material/WbSunny";
+import SevereColdIcon from "@mui/icons-material/SevereCold";
+import AirIcon from "@mui/icons-material/Air";
+import WaterIcon from "@mui/icons-material/Water";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconButton } from "@mui/material";
 import "../style.css";
 
+const iconBtnStyle = {
+  background: "#fff",
+  color: "#000",
+  width: "40px",
+  height: "40px",
+  borderRadius: "50%",
+  fontSize: "12px",
+  padding: "10px",
+  cursor: "pointer",
+};
+
+const iconStyle = {
+  fontSize: "120px",
+};
+
 function Home() {
-  const [temp, setTemp] = useState("55");
   const [data, setData] = useState({
     celcius: 10,
     name: "London",
@@ -22,17 +45,17 @@ function Home() {
         .then((res) => {
           let imagePath = "";
           if (res.data.weather[0].main === "Clouds") {
-            imagePath = "/images/cloud.png";
+            imagePath = <CloudIcon sx={iconStyle} />;
           } else if (res.data.weather[0].main === "Clear") {
-            imagePath = "/images/cloud1.png";
+            imagePath = <WbSunnyIcon sx={{ ...iconStyle, color: "yellow" }} />;
           } else if (res.data.weather[0].main === "Rain") {
-            imagePath = "/images/cloud2.png";
+            imagePath = <ThunderstormIcon sx={iconStyle} />;
           } else if (res.data.weather[0].main === "Drizzle") {
-            imagePath = "/images/cloud.png";
+            imagePath = <CloudQueueIcon sx={iconStyle} />;
           } else if (res.data.weather[0].main === "Mist") {
-            imagePath = "/images/cloud1.png";
+            imagePath = <SevereColdIcon sx={iconStyle} />;
           } else {
-            imagePath = "/images/cloud2.png";
+            imagePath = <WbSunnyIcon sx={{ ...iconStyle, color: "yellow" }} />;
           }
           setData({
             ...data,
@@ -64,31 +87,31 @@ function Home() {
             placeholder="Enter City Name"
             onChange={(e) => setName(e.target.value)}
           />
-          <button onClick={handleClick}>
+          {/* <button onClick={handleClick}>
             <img src="/images/search.png" alt="search png" />
-          </button>
+          </button> */}
+          <IconButton onClick={handleClick}>
+            <SearchIcon sx={iconBtnStyle} />
+          </IconButton>
         </div>
         <div className="error">
           <p>{error}</p>
         </div>
         <div className="winfo">
-          <img
-            src={temp >= 22 ? "/images/cloud2.png" : "/images/cloud.png"}
-            style={{ width: "100%" }}
-            alt="cloud png"
-          />
+          {data.image}
+          {/* <img src={data.image} style={{ width: "100%" }} alt="cloud png" /> */}
           <h1>{Math.round(data.celcius)}°c</h1>
           <h2>{data.name}</h2>
           <div className="details">
             <div className="col">
-              <img src="/images/humidity.png" alt="humidity" />
+              <WaterIcon sx={{ fontSize: "60px" }} />
               <div className="humidity">
                 <p>{Math.round(data.humidity)}%</p>
                 <p>Humidity</p>
               </div>
             </div>
             <div className="col">
-              <img src="/images/wind.png" alt="wind" />
+              <AirIcon sx={{ fontSize: "50px" }} />
               <div className="wind">
                 <p>{Math.round(data.speed)} km/h</p>
                 <p>Wind</p>
