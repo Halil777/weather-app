@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import CloudIcon from "@mui/icons-material/Cloud";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
@@ -8,8 +8,9 @@ import SevereColdIcon from "@mui/icons-material/SevereCold";
 import AirIcon from "@mui/icons-material/Air";
 import WaterIcon from "@mui/icons-material/Water";
 import SearchIcon from "@mui/icons-material/Search";
-import { IconButton } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import "../style.css";
+import DigitalClock from "../components/DigitalClocks";
 
 const iconBtnStyle = {
   background: "#fff",
@@ -37,6 +38,21 @@ function Home() {
 
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const isDayTime = () => {
+    const hours = time.getHours();
+    return hours >= 6 && hours < 19;
+  };
+
   const handleClick = () => {
     if (name !== "") {
       const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${name}&appid=21c4f1ec7ef1490dd4e801e25b46c4f1&units=metric`;
@@ -79,7 +95,25 @@ function Home() {
   };
 
   return (
-    <div className="container">
+    <div
+      className="container"
+      style={{
+        background: isDayTime()
+          ? "url(./images/cloud.png)"
+          : "url(./images/back.jpg)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+        backgroundPosition: "cover",
+      }}
+    >
+      <Stack
+        direction={"row"}
+        width={"100%"}
+        justifyContent={"flex-end"}
+        pr={10}
+      >
+        <DigitalClock />
+      </Stack>
       <div className="weather">
         <div className="search">
           <input
@@ -87,9 +121,6 @@ function Home() {
             placeholder="Enter City Name"
             onChange={(e) => setName(e.target.value)}
           />
-          {/* <button onClick={handleClick}>
-            <img src="/images/search.png" alt="search png" />
-          </button> */}
           <IconButton onClick={handleClick}>
             <SearchIcon sx={iconBtnStyle} />
           </IconButton>
@@ -99,7 +130,6 @@ function Home() {
         </div>
         <div className="winfo">
           {data.image}
-          {/* <img src={data.image} style={{ width: "100%" }} alt="cloud png" /> */}
           <h1>{Math.round(data.celcius)}°c</h1>
           <h2>{data.name}</h2>
           <div className="details">
